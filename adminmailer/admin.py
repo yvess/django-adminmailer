@@ -4,6 +4,7 @@ from __future__ import unicode_literals, division  # python3
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from adminmailer.models import Message
 
 
@@ -18,6 +19,18 @@ class MessageAdmin(admin.ModelAdmin):
          'fields': ('was_sended', 'date_sended', 'total_sended', 'recipients')
          }),
     )
+
+    def get_fieldsets(self, request, obj=None):
+        fieldsets = super(MessageAdmin, self).get_fieldsets(request, obj)
+        recipients = settings.ADMINMAILER['recipients']
+        if '.' in recipients:
+            fields = list(self.fieldsets[0][1]['fields'])
+            try:
+                fields.remove('recipient_list')
+                self.fieldsets[0][1]['fields'] = fields
+            except ValueError:
+                pass
+        return fieldsets
 
     def get_readonly_fields(self, request, obj=None):
         if obj:

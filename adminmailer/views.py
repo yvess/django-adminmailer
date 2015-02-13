@@ -8,6 +8,7 @@ from django.contrib import messages as contrib_messages
 from django.core.mail import EmailMessage
 from django.conf import settings
 from adminmailer.models import Message
+from django.contrib.contenttypes.models import ContentType
 
 
 @permission_required('is_superuser')
@@ -19,10 +20,19 @@ def send_all(request, pk=None):
     if not message.was_sended:
         subject, body = message.subject, message.body
         sender = settings.ADMINMAILER_SENDER
-        recipient_list = getattr(
-            message.recipient_list, settings.ADMINMAILER['recipients'])
-        if hasattr(recipient_list, 'all'):
-            recipient_list = recipient_list.all()
+        recipients = settings.ADMINMAILER['recipients']
+        # '.' for django model instead of object attribute
+        if '.' in recipients:
+            app_label, model = recipients.split('.')
+            recipient_list = ContentType.objects.get(
+                app_label=app_label, model=model
+            ).get_object_for_this_type(pk=120)
+            #).get_all_objects_for_this_type()
+        else:
+            recipient_list = getattr(
+                message.recipient_list, recipients)
+            if hasattr(recipient_list, 'all'):
+                recipient_list = recipient_list.all()
 
         extract_email_func = settings.ADMINMAILER['extract_email_func']
         recipients_emails = [

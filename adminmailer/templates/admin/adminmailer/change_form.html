@@ -1,0 +1,38 @@
+{% extends "admin/change_form.html" %}
+{% load i18n %}
+{% block extrahead %}{{ block.super }}
+<style>
+  #id_subject, #id_body, #id_recipient_list {
+    width:35em;
+  }
+  li.ob-tools button { margin:5px 15px; }
+  li.ob-tools i { margin-top:0px; }
+</style>
+<script>
+(function($){
+  $(document).ready(function() {
+    $(".object-tools a.submit").click(function(event) {
+      event.preventDefault();
+        if (event.srcElement.id == "am_all") {
+          if(confirm('Sind Sie sicher das die Meldung an alle Mitglieder der Liste geschickt werden soll?')) {
+              $("#message_form").submit();
+          }
+        }
+        if (event.srcElement.id == "am_test") {
+           $("#message_form").submit();
+        }
+    });
+  });
+})(django.jQuery);
+</script>
+{% endblock %}
+
+{% block object-tools-items %}
+{{ block.super }}
+<li class="ob-tools">
+    <a href="#" id="am_test" class="submit">test versenden</a>
+</li>
+<li class="ob-tools">
+    <a href="#" id="am_all" class="submit">an alle versenden</a>
+</li>
+{% endblock %}

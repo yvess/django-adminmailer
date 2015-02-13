@@ -15,7 +15,7 @@ class Message(models.Model):
     body = models.TextField('Meldung', max_length=4)
     test_email = models.EmailField('Test-Empfänger', blank=True)
     recipient_list = models.ForeignKey(
-        settings.ADMINMAILER['recipient_list'], null=True,
+        settings.ADMINMAILER['recipient_list'], null=True, blank=True,
         verbose_name='Versender Liste'
     )
 
