@@ -11,15 +11,20 @@
 <script>
 (function($){
   $(document).ready(function() {
+    $(".object-tools").detach().prependTo('#message_form');
     $(".object-tools a.submit").click(function(event) {
       event.preventDefault();
         if (event.srcElement.id == "am_all") {
           if(confirm('Sind Sie sicher das die Meldung an alle Mitglieder der Liste geschickt werden soll?')) {
+              $("#send_action").attr("name", "_send_all");
               $("#message_form").submit();
+              return false;
           }
         }
         if (event.srcElement.id == "am_test") {
+           $("#send_action").attr("name", "_send_test");
            $("#message_form").submit();
+           return false;
         }
     });
   });
@@ -29,6 +34,7 @@
 
 {% block object-tools-items %}
 {{ block.super }}
+<input type="hidden" name="send_action" id="send_action" />
 <li class="ob-tools">
     <a href="#" id="am_test" class="submit">test versenden</a>
 </li>
