@@ -1,0 +1,18 @@
+{
+	"folders":
+	[
+		{
+			"file_exclude_patterns":
+			[
+				"adminmailer.sublime-workspace",
+				"adminmailer.sublime-project"
+			],
+			"folder_exclude_patterns":
+			[
+				"adminmailer.egg-info"
+			],
+			"follow_symlinks": true,
+			"path": "."
+		}
+	]
+}

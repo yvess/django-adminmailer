@@ -15,8 +15,8 @@ setup(
     author='Yves Serrano',
     author_email='ys@taywa.ch',
 
-    url='http://github.com/nyaruka/adminmailer',
-    download_url='http://github.com/nyaruka/adminmailer/downloads',
+    url='http://github.com/yvess/django-adminmailer',
+    download_url='http://github.com/yvess/django-adminmailer/downloads',
 
     include_package_data=True,
 
