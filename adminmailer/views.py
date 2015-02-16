@@ -5,10 +5,9 @@ from datetime import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages as contrib_messages
-from django.core.mail import EmailMessage
 from django.conf import settings
 from adminmailer.models import Message
-from django.contrib.contenttypes.models import ContentType
+from .utils import create_email, get_recipients
 
 
 @permission_required('is_superuser')
@@ -22,24 +21,13 @@ def send_all(request, pk=None):
         sender = settings.ADMINMAILER_SENDER
         recipients = settings.ADMINMAILER['recipients']
         # '.' for django model instead of object attribute
-        if '.' in recipients:
-            app_label, model = recipients.split('.')
-            recipient_list = ContentType.objects.get(
-                app_label=app_label, model=model
-            ).get_object_for_this_type(pk=120)
-            #).get_all_objects_for_this_type()
-        else:
-            recipient_list = getattr(
-                message.recipient_list, recipients)
-            if hasattr(recipient_list, 'all'):
-                recipient_list = recipient_list.all()
 
+        recipient_list = get_recipients(recipients, message)
+        recipients_emails = []
         extract_email_func = settings.ADMINMAILER['extract_email_func']
-        recipients_emails = [
-            extract_email_func(recipient) for recipient in recipient_list]
-        for email in recipients_emails:
-            msg = EmailMessage(
-                subject, body, sender, [email])
+        for recipient in recipient_list:
+            recipients_emails.append(extract_email_func(recipient))
+            msg = create_email(subject, body, sender, recipient)
             msg.send()
         message.total_sended = len(recipients_emails)
         message.recipients = ", ".join(recipients_emails)
@@ -65,12 +53,17 @@ def send_test(request, pk=None):
     subject, body = message.subject, message.body
     sender = settings.ADMINMAILER_SENDER
 
-    recipients = [email.strip() for email in message.test_email.split(",")]
-    msg = EmailMessage(subject, body, sender, recipients)
+    email_recipients = [email.strip() for email in message.test_email.split(",")]
+    recipients = settings.ADMINMAILER['recipients']
+    recipient_list = get_recipients(recipients, message)
+    msg = create_email(
+        subject, body, sender,
+        recipient_list[0], overwrite_email_recipients=email_recipients
+    )
     msg.send()
     contrib_messages.add_message(
         request, contrib_messages.INFO,
-        'Das Test Email wurde verschickt an: %s' % ", ".join(recipients)
+        'Das Test Email wurde verschickt an: %s' % ", ".join(email_recipients)
     )
 
     return redirect(request.META.get('HTTP_REFERER', None))
