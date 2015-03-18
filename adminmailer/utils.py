@@ -22,13 +22,15 @@ def get_recipients(recipients, message):
         objects = ContentType.objects.get(
             app_label=app_label, model=model
         )
-        recipient_list = [objects.get_object_for_this_type(pk=120)]
-        # recipient_list = objects.get_all_objects_for_this_type()
+        recipient_list = objects.get_all_objects_for_this_type()[:10]
     if '.' not in recipients and recipient_list:
         recipient_list = getattr(
             message.recipient_list, recipients)
         if hasattr(recipient_list, 'all'):
             recipient_list = recipient_list.all()
+    if 'recipient_condition' in settings.ADMINMAILER:
+        to_include = settings.ADMINMAILER['recipient_condition']
+        recipient_list = [r for r in recipient_list if to_include(r)]
     return recipient_list
 
 
@@ -42,7 +44,7 @@ def create_email(subject, body, sender,
 
     if 'template_context' in settings.ADMINMAILER:
         for key, func in settings.ADMINMAILER['template_context'].iteritems():
-            body.replace(key, func(recipient))
+            body = body.replace(key, func(recipient))
     return EmailMessage(
         subject, body, sender, email_recipients
     )

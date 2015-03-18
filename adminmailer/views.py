@@ -26,9 +26,11 @@ def send_all(request, pk=None):
         recipients_emails = []
         extract_email_func = settings.ADMINMAILER['extract_email_func']
         for recipient in recipient_list:
-            recipients_emails.append(extract_email_func(recipient))
-            msg = create_email(subject, body, sender, recipient)
-            msg.send()
+            to_email = extract_email_func(recipient)
+            if '@' in to_email:
+                recipients_emails.append(to_email)
+                msg = create_email(subject, body, sender, recipient)
+                msg.send()
         message.total_sended = len(recipients_emails)
         message.recipients = ", ".join(recipients_emails)
         message.was_sended, message.date_sended = True, datetime.now()
