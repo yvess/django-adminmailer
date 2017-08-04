@@ -22,7 +22,7 @@ def get_recipients(recipients, message):
         objects = ContentType.objects.get(
             app_label=app_label, model=model
         )
-        recipient_list = objects.get_all_objects_for_this_type()[:10]
+        recipient_list = objects.get_all_objects_for_this_type()
     if '.' not in recipients and recipient_list:
         recipient_list = getattr(
             message.recipient_list, recipients)
