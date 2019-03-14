@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function  # python3
-from __future__ import unicode_literals, division  # python3
+
 from django.core.mail import EmailMessage
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings

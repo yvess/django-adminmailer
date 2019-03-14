@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import absolute_import, print_function  # python3
-from __future__ import unicode_literals, division  # python3
 from django.db import models
 from django.utils.timezone import now
 from django.conf import settings
@@ -8,9 +5,9 @@ from django.conf import settings
 
 class Message(models.Model):
     created = models.DateTimeField(
-        auto_now_add=True, editable=False, default=now)
+        auto_now_add=True, editable=False)
     modified = models.DateTimeField(
-        auto_now=True, editable=False, default=now)
+        auto_now=True, editable=False)
     subject = models.CharField('Betreff', max_length=200)
     body = models.TextField('Meldung', max_length=4)
     test_email = models.EmailField('Test-Empfänger', blank=True)
