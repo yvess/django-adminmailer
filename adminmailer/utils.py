@@ -41,7 +41,7 @@ def create_email(subject, body, sender,
         email_recipients = overwrite_email_recipients
 
     if 'template_context' in settings.ADMINMAILER:
-        for key, func in settings.ADMINMAILER['template_context'].iteritems():
+        for key, func in settings.ADMINMAILER['template_context'].items():
             body = body.replace(key, func(recipient))
     return EmailMessage(
         subject, body, sender, email_recipients
