@@ -9,7 +9,7 @@ class Message(models.Model):
     modified = models.DateTimeField(
         auto_now=True, editable=False)
     subject = models.CharField('Betreff', max_length=200)
-    body = models.TextField('Meldung', max_length=4)
+    body = models.TextField('Meldung')
     test_email = models.EmailField('Test-Empfänger', blank=True)
     recipient_list = models.ForeignKey(
         settings.ADMINMAILER['recipient_list'], null=True, blank=True,
@@ -29,5 +29,5 @@ class Message(models.Model):
         verbose_name = 'Meldung'
         verbose_name_plural = 'Meldungen'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.subject
